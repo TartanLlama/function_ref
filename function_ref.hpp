@@ -152,9 +152,9 @@ public:
             detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref &operator=(F &&f) noexcept {
-    obj_ = std::addressof(f);
+    obj_ = reinterpret_cast<void*>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
-      return detail::invoke(std::forward<F>(*reinterpret_cast<F *>(obj)),
+        return detail::invoke(std::forward<F>(*reinterpret_cast<typename std::add_pointer<F>::type>(obj)),
                             std::forward<Args>(args)...);
     };
   }
