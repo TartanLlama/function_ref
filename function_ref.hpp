@@ -139,7 +139,10 @@ public:
     };
   }
 
-    constexpr function_ref &operator=(const function_ref &rhs) noexcept = default;
+    TL_FUNCTION_REF_11_CONSTEXPR function_ref &operator=(const function_ref &rhs) noexcept {
+    obj_ = rhs.obj_;
+    callback_ = rhs.callback_;
+  }
   constexpr function_ref &operator=(std::nullptr_t) noexcept {
     obj_ = nullptr;
     callback_ = nullptr;
