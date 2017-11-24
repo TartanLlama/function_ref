@@ -71,7 +71,7 @@ using conditional_t = typename std::conditional<B, T, F>::type;
 // std::invoke from C++17
 // https://stackoverflow.com/questions/38288042/c11-14-invoke-workaround
 template <typename Fn, typename... Args,
-          typename = enable_if_t<std::is_member_pointer<decay_t<Fn>>{}>,
+          typename = enable_if_t<std::is_member_pointer<decay_t<Fn>>::value>,
           int = 0>
 constexpr auto invoke(Fn &&f, Args &&... args) noexcept(
     noexcept(std::mem_fn(f)(std::forward<Args>(args)...)))
