@@ -143,6 +143,7 @@ public:
   operator=(const function_ref &rhs) noexcept {
     obj_ = rhs.obj_;
     callback_ = rhs.callback_;
+    return *this;
   }
   TL_FUNCTION_REF_11_CONSTEXPR function_ref &
   operator=(std::nullptr_t) noexcept {
