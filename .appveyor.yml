@@ -8,6 +8,3 @@ build_script:
   - cmake ..
   - cmake --build .
   - C:\projects\function-ref\build\Debug\tests.exe
-
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
