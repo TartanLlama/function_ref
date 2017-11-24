@@ -18,26 +18,31 @@
 #define TL_FUNCTION_REF_VERSION_MINOR 1
 
 #if (defined(_MSC_VER) && _MSC_VER == 1900)
+/// \exclude
 #define TL_FUNCTION_REF_MSVC2015
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
+/// \exclude
 #define TL_FUNCTION_REF_GCC49
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 5 && __GNUC_MINOR__ <= 4 &&              \
      !defined(__clang__))
+/// \exclude
 #define TL_FUNCTION_REF_GCC54
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
 // GCC < 5 doesn't support overloading on const&& for member functions
+/// \exclude
 #define TL_FUNCTION_REF_NO_CONSTRR
 #endif
 
 #if __cplusplus > 201103L
+/// \exclude
 #define TL_FUNCTION_REF_CXX14
 #endif
 
@@ -117,13 +122,29 @@ using is_invocable_r = is_invocable_r_impl<std::true_type, R, F, Args...>;
 
 } // namespace detail
 
+/// A lightweight non-owning reference to a callable.
+///
+/// Example usage:
+///
+/// ```cpp
+/// void foo (function_ref<int(int)> func) {
+///     std::cout << "Result is " << func(21); //42
+/// }
+///
+/// foo([](int i) { return i*2; });
 template <class F> class function_ref;
 
+/// Specialization for function types.
 template <class R, class... Args> class function_ref<R(Args...)> {
 public:
   constexpr function_ref() noexcept = delete;
-  constexpr function_ref(const function_ref &) noexcept = default;
 
+  /// Creates a `function_ref` which refers to the same callable as `rhs`.
+    constexpr function_ref(const function_ref<R(Args...)> &rhs) noexcept = default;
+
+  /// Constructs a `function_ref` referring to `f`.
+  ///
+  /// \synopsis template <typename F> constexpr function_ref(F &&f) noexcept
   template <typename F,
             detail::enable_if_t<
                 !std::is_same<detail::decay_t<F>, function_ref>::value &&
@@ -137,17 +158,21 @@ public:
     };
   }
 
-  TL_FUNCTION_REF_11_CONSTEXPR function_ref &
-  operator=(const function_ref &rhs) noexcept {
+  /// Makes `*this` refer to the same callable as `rhs`.
+  TL_FUNCTION_REF_11_CONSTEXPR function_ref<R(Args...)> &
+  operator=(const function_ref<R(Args...)> &rhs) noexcept {
     obj_ = rhs.obj_;
     callback_ = rhs.callback_;
     return *this;
   }
 
+  /// Makes `*this` refer to `f`.
+  ///
+  /// \synopsis template <typename F> constexpr function_ref &operator=(F &&f) noexcept;
   template <typename F,
             detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
-  TL_FUNCTION_REF_11_CONSTEXPR function_ref &operator=(F &&f) noexcept {
+  TL_FUNCTION_REF_11_CONSTEXPR function_ref<R(Args...)> &operator=(F &&f) noexcept {
     obj_ = reinterpret_cast<void *>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
       return detail::invoke(
@@ -158,11 +183,13 @@ public:
     return *this;
   }
 
-  constexpr void swap(function_ref &rhs) noexcept {
+  /// Swaps the referred callables of `*this` and `rhs`.
+  constexpr void swap(function_ref<R(Args...)> &rhs) noexcept {
     std::swap(obj_, rhs.obj_);
     std::swap(callback_, rhs.callback_);
   }
 
+  /// Call the stored callable with the given arguments.
   R operator()(Args... args) const {
     return callback_(obj_, std::forward<Args>(args)...);
   }
@@ -172,6 +199,7 @@ private:
   R (*callback_)(void *, Args...) = nullptr;
 };
 
+/// Swaps the referred callables of `lhs` and `rhs`.
 template <typename R, typename... Args>
 constexpr void swap(function_ref<R(Args...)> &lhs,
                     function_ref<R(Args...)> &rhs) noexcept {
