@@ -132,8 +132,7 @@ public:
       : obj_(reinterpret_cast<void *>(std::addressof(f))) {
     callback_ = [](void *obj, Args... args) {
       return detail::invoke(
-          std::forward<F>(
-              *reinterpret_cast<typename std::add_pointer<F>::type>(obj)),
+          *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
           std::forward<Args>(args)...);
     };
   }
@@ -152,8 +151,7 @@ public:
     obj_ = reinterpret_cast<void *>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
       return detail::invoke(
-          std::forward<F>(
-              *reinterpret_cast<typename std::add_pointer<F>::type>(obj)),
+          *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
           std::forward<Args>(args)...);
     };
 
