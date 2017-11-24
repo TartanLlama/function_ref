@@ -36,7 +36,17 @@ public:
     R <a href='doc_function_ref.html#tl::function_ref-R(Args...)-::operator()(Args...)const'>operator()</a>(Args... args) const;
 };</code></pre>
 
-Specialization for function types.
+A lightweight non-owning reference to a callable.
+
+Example usage:
+
+``` cpp
+void foo (function_ref<int(int)> func) {
+    std::cout << "Result is " << func(21); //42
+}
+
+foo([](int i) { return i*2; });
+```
 
 ### Copy constructor `tl::function_ref<R(Args...)>::function_ref`<a id="tl::function_ref-R(Args...)-::function_ref(constfunction_ref-R(Args...)-&)"></a>
 
