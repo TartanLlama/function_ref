@@ -104,16 +104,16 @@ template <class F, class... Us>
 using invoke_result_t = typename invoke_result<F, Us...>::type;
 #endif
 
-template <bool, class R, class F, class... Args>
+template <class, class R, class F, class... Args>
 struct is_invocable_r_impl : std::false_type {};
 
 template <class R, class F, class... Args>
-struct is_invocable_r_impl<true, R, F, Args...> : std::true_type {};
+struct is_invocable_r_impl<
+    typename std::is_same<invoke_result_t<F, Args...>, R>::type, R, F, Args...>
+    : std::true_type {};
 
 template <class R, class F, class... Args>
-using is_invocable_r =
-    is_invocable_r_impl<std::is_same<invoke_result_t<F, Args...>, R>::value, R,
-                        F, Args...>;
+using is_invocable_r = is_invocable_r_impl<std::true_type, R, F, Args...>;
 
 } // namespace detail
 
@@ -144,7 +144,7 @@ public:
     callback_ = rhs.callback_;
     return *this;
   }
-    
+
   template <typename F,
             detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
