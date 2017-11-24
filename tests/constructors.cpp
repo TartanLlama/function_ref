@@ -7,28 +7,7 @@ struct bar {
 };
 
 TEST_CASE("Constructors", "[constructors]") {
-    {
-        tl::function_ref<void(void)> fr;
-        REQUIRE(!fr);
-    }
-
-    {
-        tl::function_ref<void(void)> fr = nullptr;
-        REQUIRE(!fr);
-    }    
-
-    {
-        tl::function_ref<void(void)> fr = []{};
-        REQUIRE(fr);
-    }
-
-    {
-        tl::function_ref<void(void)> fr = foo;
-        REQUIRE(fr);
-    }        
-
-    {
-        tl::function_ref<void(bar)> fr = &bar::baz;
-        REQUIRE(fr);
-    }            
+    tl::function_ref<void(void)> fr1 = []{};
+    tl::function_ref<void(void)> fr2 = foo;
+    tl::function_ref<void(bar)> fr3 = &bar::baz;
 }

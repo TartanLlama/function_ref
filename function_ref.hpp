@@ -121,8 +121,7 @@ template <class F> class function_ref;
 
 template <class R, class... Args> class function_ref<R(Args...)> {
 public:
-  constexpr function_ref() noexcept = default;
-  constexpr function_ref(std::nullptr_t) noexcept : function_ref() {}
+  constexpr function_ref() noexcept = delete;
   constexpr function_ref(const function_ref &) noexcept = default;
 
   template <typename F,
@@ -145,13 +144,7 @@ public:
     callback_ = rhs.callback_;
     return *this;
   }
-  TL_FUNCTION_REF_11_CONSTEXPR function_ref &
-  operator=(std::nullptr_t) noexcept {
-    obj_ = nullptr;
-    callback_ = nullptr;
-    return *this;
-  }
-
+    
   template <typename F,
             detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
@@ -172,8 +165,6 @@ public:
     std::swap(callback_, rhs.callback_);
   }
 
-  constexpr explicit operator bool() const noexcept { return obj_ != nullptr; }
-
   R operator()(Args... args) const {
     return callback_(obj_, std::forward<Args>(args)...);
   }
@@ -187,30 +178,6 @@ template <typename R, typename... Args>
 constexpr void swap(function_ref<R(Args...)> &lhs,
                     function_ref<R(Args...)> &rhs) noexcept {
   lhs.swap(rhs);
-}
-
-template <typename R, typename... Args>
-constexpr bool operator==(const function_ref<R(Args...)> &f,
-                          std::nullptr_t) noexcept {
-  return f == nullptr;
-}
-
-template <typename R, typename... Args>
-constexpr bool operator==(std::nullptr_t,
-                          const function_ref<R(Args...)> &f) noexcept {
-  return f == nullptr;
-}
-
-template <typename R, typename... Args>
-constexpr bool operator!=(const function_ref<R(Args...)> &f,
-                          std::nullptr_t) noexcept {
-  return f != nullptr;
-}
-
-template <typename R, typename... Args>
-constexpr bool operator!=(std::nullptr_t,
-                          const function_ref<R(Args...)> &f) noexcept {
-  return f != nullptr;
 }
 
 #if __cplusplus >= 201703L
