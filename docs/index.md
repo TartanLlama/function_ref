@@ -8,48 +8,6 @@
 
 namespace <a href='doc_function_ref.html#function_ref.hpp'>tl</a>
 {
-    namespace <a href='doc_function_ref.html#function_ref.hpp'>detail</a>
-    {
-        template &lt;class T&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>remove_const_t</a> = typename std::remove_const&lt;T&gt;::type;
-        
-        template &lt;class T&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>remove_reference_t</a> = typename std::remove_reference&lt;T&gt;::type;
-        
-        template &lt;class T&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>decay_t</a> = typename std::decay&lt;T&gt;::type;
-        
-        template &lt;bool E, class T = void&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>enable_if_t</a> = typename std::enable_if&lt;E, T&gt;::type;
-        
-        template &lt;bool B, class T, class F&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>conditional_t</a> = typename std::conditional&lt;B, T, F&gt;::type;
-        
-        template &lt;typename Fn, typename ... Args, typename = enable_if_t&lt;std::is_member_pointer&lt;decay_t&lt;Fn&gt;&gt;::value&gt;, int=0&gt;
-        constexpr decltype(std::mem_fn(f)(std::forward&lt;Args&gt;(args)...)) <a href='doc_function_ref.html#function_ref.hpp'>invoke</a>(Fn&amp;&amp; f, Args&amp;&amp;... args) noexcept(noexcept(std::mem_fn(f)(std::forward&lt;Args&gt;(args)...)));
-        
-        template &lt;typename Fn, typename ... Args, typename = enable_if_t&lt;!std::is_member_pointer&lt;decay_t&lt;Fn&gt;&gt;{}&gt;&gt;
-        constexpr decltype(std::forward&lt;Fn&gt;(f)(std::forward&lt;Args&gt;(args)...)) <a href='doc_function_ref.html#function_ref.hpp'>invoke</a>(Fn&amp;&amp; f, Args&amp;&amp;... args) noexcept(noexcept(std::forward&lt;Fn&gt;(f)(std::forward&lt;Args&gt;(args)...)));
-        
-        template &lt;class F, class ... Us&gt;
-        struct <a href='doc_function_ref.html#function_ref.hpp'>invoke_result_impl&lt;F, decltype(invoke(std::declval&lt;F&gt;(), std::declval&lt;Us&gt;()...), void()), Us...&gt;</a>;
-        
-        template &lt;class F, class ... Us&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>invoke_result</a> = invoke_result_impl&lt;F, void, Us...&gt;;
-        
-        template &lt;class F, class ... Us&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>invoke_result_t</a> = typename invoke_result&lt;F, Us...&gt;::type;
-        
-        template &lt;class, class R, class F, class ... Args&gt;
-        struct <a href='doc_function_ref.html#function_ref.hpp'>is_invocable_r_impl</a>;
-        
-        template &lt;class R, class F, class ... Args&gt;
-        struct <a href='doc_function_ref.html#function_ref.hpp'>is_invocable_r_impl&lt;typename std::is_same&lt;invoke_result_t&lt;F, Args...&gt;, R&gt;::type, R, F, Args...&gt;</a>;
-        
-        template &lt;class R, class F, class ... Args&gt;
-        using <a href='doc_function_ref.html#function_ref.hpp'>is_invocable_r</a> = <a href='doc_function_ref.html#function_ref.hpp'>is_invocable_r_impl&lt;std::true_type, R, F, Args...&gt;</a>;
-    }
-    
     template &lt;class R, class ... Args&gt;
     class <a href='doc_function_ref.html#tl::function_ref-R(Args...)-'>function_ref&lt;R(Args...)&gt;</a>;
     
