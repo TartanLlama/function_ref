@@ -21,17 +21,17 @@
 #define TL_FUNCTION_REF_MSVC2015
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&        \
+#if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
 #define TL_FUNCTION_REF_GCC49
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ == 5 && __GNUC_MINOR__ <= 4 &&        \
+#if (defined(__GNUC__) && __GNUC__ == 5 && __GNUC_MINOR__ <= 4 &&              \
      !defined(__clang__))
 #define TL_FUNCTION_REF_GCC54
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&        \
+#if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
 // GCC < 5 doesn't support overloading on const&& for member functions
 #define TL_FUNCTION_REF_NO_CONSTRR
@@ -42,8 +42,8 @@
 #endif
 
 // constexpr implies const in C++11, not C++14
-#if (__cplusplus == 201103L || defined(TL_FUNCTION_REF_MSVC2015) ||     \
-     defined(TL_FUNCTION_REF_GCC49)) &&                                 \
+#if (__cplusplus == 201103L || defined(TL_FUNCTION_REF_MSVC2015) ||            \
+     defined(TL_FUNCTION_REF_GCC49)) &&                                        \
     !defined(TL_FUNCTION_REF_GCC54)
 /// \exclude
 #define TL_FUNCTION_REF_11_CONSTEXPR
@@ -139,24 +139,31 @@ public:
     };
   }
 
-    TL_FUNCTION_REF_11_CONSTEXPR function_ref &operator=(const function_ref &rhs) noexcept {
+  TL_FUNCTION_REF_11_CONSTEXPR function_ref &
+  operator=(const function_ref &rhs) noexcept {
     obj_ = rhs.obj_;
     callback_ = rhs.callback_;
   }
-  constexpr function_ref &operator=(std::nullptr_t) noexcept {
+  TL_FUNCTION_REF_11_CONSTEXPR function_ref &
+  operator=(std::nullptr_t) noexcept {
     obj_ = nullptr;
     callback_ = nullptr;
+    return *this;
   }
 
   template <typename F,
             detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref &operator=(F &&f) noexcept {
-    obj_ = reinterpret_cast<void*>(std::addressof(f));
+    obj_ = reinterpret_cast<void *>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
-        return detail::invoke(std::forward<F>(*reinterpret_cast<typename std::add_pointer<F>::type>(obj)),
-                            std::forward<Args>(args)...);
+      return detail::invoke(
+          std::forward<F>(
+              *reinterpret_cast<typename std::add_pointer<F>::type>(obj)),
+          std::forward<Args>(args)...);
     };
+
+    return *this;
   }
 
   constexpr void swap(function_ref &rhs) noexcept {
