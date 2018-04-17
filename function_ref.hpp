@@ -62,7 +62,8 @@
 
 namespace tl {
 namespace detail {
-#ifndef TL_DECL_MUTEX
+#ifndef TL_TRAITS_MUTEX
+#define TL_TRAITS_MUTEX
 // C++14-style aliases for brevity
 template <class T> using remove_const_t = typename std::remove_const<T>::type;
 template <class T>
