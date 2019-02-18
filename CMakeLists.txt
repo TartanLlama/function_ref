@@ -11,6 +11,7 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/constructors.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/call.cpp  
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/issues.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/assignment.cpp)
 
 add_executable(tests ${TEST_SOURCES})

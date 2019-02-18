@@ -15,7 +15,7 @@
 #define TL_FUNCTION_REF_HPP
 
 #define TL_FUNCTION_REF_VERSION_MAJOR 0
-#define TL_FUNCTION_REF_VERSION_MINOR 1
+#define TL_FUNCTION_REF_VERSION_MINOR 2
 
 #if (defined(_MSC_VER) && _MSC_VER == 1900)
 /// \exclude
@@ -151,7 +151,7 @@ public:
                 !std::is_same<detail::decay_t<F>, function_ref>::value &&
                 detail::is_invocable_r<R, F &&, Args...>::value> * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref(F &&f) noexcept
-      : obj_(reinterpret_cast<void *>(std::addressof(f))) {
+      : obj_(const_cast<void*>(reinterpret_cast<const void *>(std::addressof(f)))) {
     callback_ = [](void *obj, Args... args) {
       return detail::invoke(
           *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
