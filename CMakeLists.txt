@@ -10,7 +10,7 @@ target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 # Make test executable
 set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/constructors.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/call.cpp  
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/call.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/issues.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/tests/assignment.cpp)
 
@@ -23,6 +23,7 @@ target_include_directories(function_ref INTERFACE ${CMAKE_SOURCE_DIR})
 target_link_libraries(tests Catch function_ref)
 set_property(TARGET tests PROPERTY CXX_STANDARD 14)
 
+set(CMAKE_CXX_FLAGS "-O2")
 
 find_package(standardese) # find standardese after installation
 
