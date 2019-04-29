@@ -15,7 +15,7 @@ void foo (function_ref<int(int)> func) {
 foo([](int i) { return i*2; });
 ```
 
-Full documentation available [here](https://function-ref.tartanllama.xyz/).
+Full documentation available [here](https://tl.tartanllama.xyz/).
 
 ----------
 
