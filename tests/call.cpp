@@ -21,22 +21,26 @@ TEST_CASE("Call", "[call]") {
 
     {
         b o;
-        tl::function_ref<void(b&)> fr = &b::baz;
+        auto x = &b::baz;
+        tl::function_ref<void(b&)> fr = x;
         fr(o);
         REQUIRE(o.baz_called);        
-        fr = &b::qux;
+        x = &b::qux;
+        fr = x;
         fr(o);
         REQUIRE(o.qux_called);                
     }
 
     {
-        tl::function_ref<int()> fr = []{ return 42; };
+        auto x = []{ return 42; };
+        tl::function_ref<int()> fr = x;
         REQUIRE(fr() == 42);
     }
 
     {
         int i = 0;
-        tl::function_ref<void()> fr = [&i]{ i = 42; };
+        auto x = [&i]{ i = 42; };
+        tl::function_ref<void()> fr = x;
         fr();
         REQUIRE(i == 42);
     }    
