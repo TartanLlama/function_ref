@@ -8,11 +8,12 @@ MSVC: [![Windows Build Status](https://ci.appveyor.com/api/projects/status/k5x00
 Use `tl::function_ref` instead of `std::function` whenever you don't need to own the callable. The most common case for this is function parameters which aren't stored anywhere:
 
 ```cpp
-void foo (function_ref<int(int)> func) {
+void foo (tl::function_ref<int(int)> func) {
     std::cout << "Result is " << func(21); //42
 }
 
-foo([](int i) { return i*2; });
+auto x = [](int i) { return i*2; };
+foo(x);
 ```
 
 Full documentation available [here](https://tl.tartanllama.xyz/).
