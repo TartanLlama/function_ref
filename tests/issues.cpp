@@ -18,5 +18,5 @@ tl::function_ref<Fruit* ()> bar()
 }
 
 TEST_CASE("Issue #9") {
-  REQUIRE(bar()() == nullptr);
+  bar();
 }
