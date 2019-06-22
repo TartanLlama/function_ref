@@ -1,7 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
 
+# Determine if we are building as part of a parent project.
+get_directory_property(is_subproject PARENT_DIRECTORY)
+
 project(function_ref)
 
+add_library(function_ref INTERFACE)
+target_sources(function_ref INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/function_ref.hpp)
+target_include_directories(function_ref INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+if(NOT is_subproject)
 # Prepare "Catch" library for other executables
 set(CATCH_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/test)
 add_library(Catch INTERFACE)
@@ -16,10 +24,6 @@ set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
 
 add_executable(tests ${TEST_SOURCES})
 
-add_library(function_ref INTERFACE)
-target_sources(function_ref INTERFACE ${CMAKE_SOURCE_DIR}/function_ref.hpp)
-target_include_directories(function_ref INTERFACE ${CMAKE_SOURCE_DIR})
-
 target_link_libraries(tests Catch function_ref)
 set_property(TARGET tests PROPERTY CXX_STANDARD 14)
 
@@ -32,4 +36,5 @@ standardese_generate(function_ref
                      INCLUDE_DIRECTORY .
                      CONFIG ${CMAKE_SOURCE_DIR}/standardese.config
                      INPUT function_ref.hpp)
+endif ()
 endif ()
