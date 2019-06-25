@@ -33,7 +33,7 @@ matrix:
       addons:
         apt:
           sources:
-             - llvm-toolchain-precise-3.5
+             - llvm-toolchain-xenial-3.5
              - ubuntu-toolchain-r-test
           packages:
              - clang++-3.5
@@ -43,7 +43,7 @@ matrix:
       addons:
         apt:
           sources:
-             - llvm-toolchain-precise-3.6
+             - llvm-toolchain-xenial-3.6
              - ubuntu-toolchain-r-test
           packages:
              - clang++-3.6
@@ -53,7 +53,7 @@ matrix:
       addons:
         apt:
           sources:
-             - llvm-toolchain-precise-3.7
+             - llvm-toolchain-xenial-3.7
              - ubuntu-toolchain-r-test
           packages:
              - clang++-3.7
@@ -63,7 +63,7 @@ matrix:
       addons:
         apt:
           sources:
-             - llvm-toolchain-precise-3.8
+             - llvm-toolchain-xenial-3.8
              - ubuntu-toolchain-r-test
           packages:
              - clang++-3.8
