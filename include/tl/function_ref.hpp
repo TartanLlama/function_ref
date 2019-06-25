@@ -63,8 +63,7 @@
 
 namespace tl {
 namespace detail {
-#ifndef TL_TRAITS_MUTEX
-#define TL_TRAITS_MUTEX
+namespace fnref {
 // C++14-style aliases for brevity
 template <class T> using remove_const_t = typename std::remove_const<T>::type;
 template <class T>
@@ -99,9 +98,9 @@ template <class F, class, class... Us> struct invoke_result_impl;
 
 template <class F, class... Us>
 struct invoke_result_impl<
-    F, decltype(invoke(std::declval<F>(), std::declval<Us>()...), void()),
+    F, decltype(tl::detail::fnref::invoke(std::declval<F>(), std::declval<Us>()...), void()),
     Us...> {
-  using type = decltype(invoke(std::declval<F>(), std::declval<Us>()...));
+  using type = decltype(tl::detail::fnref::invoke(std::declval<F>(), std::declval<Us>()...));
 };
 
 template <class F, class... Us>
@@ -109,7 +108,6 @@ using invoke_result = invoke_result_impl<F, void, Us...>;
 
 template <class F, class... Us>
 using invoke_result_t = typename invoke_result<F, Us...>::type;
-#endif
 
 template <class, class R, class F, class... Args>
 struct is_invocable_r_impl : std::false_type {};
@@ -123,6 +121,7 @@ template <class R, class F, class... Args>
 using is_invocable_r = is_invocable_r_impl<std::true_type, R, F, Args...>;
 
 } // namespace detail
+} // namespace fnref
 
 /// A lightweight non-owning reference to a callable.
 ///
@@ -148,13 +147,13 @@ public:
   ///
   /// \synopsis template <typename F> constexpr function_ref(F &&f) noexcept
   template <typename F,
-            detail::enable_if_t<
-                !std::is_same<detail::decay_t<F>, function_ref>::value &&
-                detail::is_invocable_r<R, F &&, Args...>::value> * = nullptr>
+            detail::fnref::enable_if_t<
+                !std::is_same<detail::fnref::decay_t<F>, function_ref>::value &&
+                detail::fnref::is_invocable_r<R, F &&, Args...>::value> * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref(F &&f) noexcept
       : obj_(const_cast<void*>(reinterpret_cast<const void *>(std::addressof(f)))) {
     callback_ = [](void *obj, Args... args) -> R {
-      return detail::invoke(
+      return detail::fnref::invoke(
           *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
           std::forward<Args>(args)...);
     };
@@ -172,12 +171,12 @@ public:
   ///
   /// \synopsis template <typename F> constexpr function_ref &operator=(F &&f) noexcept;
   template <typename F,
-            detail::enable_if_t<detail::is_invocable_r<R, F &&, Args...>::value>
+            detail::fnref::enable_if_t<detail::fnref::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref<R(Args...)> &operator=(F &&f) noexcept {
     obj_ = reinterpret_cast<void *>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
-      return detail::invoke(
+      return detail::fnref::invoke(
           *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
           std::forward<Args>(args)...);
     };

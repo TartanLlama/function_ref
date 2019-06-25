@@ -20,3 +20,13 @@ tl::function_ref<Fruit* ()> bar()
 TEST_CASE("Issue #9") {
   REQUIRE(bar()() == nullptr);
 }
+
+void foo(const tl::function_ref<int(const std::vector<int>)>& func) {
+  REQUIRE(func({ 12 }) == 144);
+}
+
+TEST_CASE("Issue #10") {
+  int z = 12;
+  auto f = [&](const std::vector<int> i) { return i[0] * z; };
+  foo(f);
+}
