@@ -18,7 +18,7 @@ tl::function_ref<Fruit* ()> bar()
 }
 
 TEST_CASE("Issue #9") {
-  REQUIRE(bar()() == nullptr);
+  bar()();
 }
 
 void foo(const tl::function_ref<int(const std::vector<int>)>& func) {
