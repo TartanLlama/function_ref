@@ -1,6 +1,8 @@
 ///
 // function_ref - A low-overhead non-owning function
-// Written in 2017 by Simon Brand (@TartanLlama)
+// Written in 2017 by Simon Brand (simonrbrand@gmail.com, @TartanLlama)
+//
+// Documentation available at https://tl.tartanllama.xyz/
 //
 // To the extent possible under law, the author(s) have dedicated all
 // copyright and related and neighboring rights to this software to the
@@ -19,31 +21,26 @@
 #define TL_FUNCTION_REF_VERSION_PATCH 0
 
 #if (defined(_MSC_VER) && _MSC_VER == 1900)
-/// \exclude
 #define TL_FUNCTION_REF_MSVC2015
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
-/// \exclude
 #define TL_FUNCTION_REF_GCC49
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 5 && __GNUC_MINOR__ <= 4 &&              \
      !defined(__clang__))
-/// \exclude
 #define TL_FUNCTION_REF_GCC54
 #endif
 
 #if (defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 9 &&              \
      !defined(__clang__))
 // GCC < 5 doesn't support overloading on const&& for member functions
-/// \exclude
 #define TL_FUNCTION_REF_NO_CONSTRR
 #endif
 
 #if __cplusplus > 201103L
-/// \exclude
 #define TL_FUNCTION_REF_CXX14
 #endif
 
@@ -51,10 +48,8 @@
 #if (__cplusplus == 201103L || defined(TL_FUNCTION_REF_MSVC2015) ||            \
      defined(TL_FUNCTION_REF_GCC49)) &&                                        \
     !defined(TL_FUNCTION_REF_GCC54)
-/// \exclude
 #define TL_FUNCTION_REF_11_CONSTEXPR
 #else
-/// \exclude
 #define TL_FUNCTION_REF_11_CONSTEXPR constexpr
 #endif
 
@@ -164,8 +159,6 @@ public:
   operator=(const function_ref<R(Args...)> &rhs) noexcept = default;
 
   /// Makes `*this` refer to `f`.
-  ///
-  /// \synopsis template <typename F> constexpr function_ref &operator=(F &&f) noexcept;
   template <typename F,
             detail::fnref::enable_if_t<detail::fnref::is_invocable_r<R, F &&, Args...>::value>
                 * = nullptr>
