@@ -116,7 +116,7 @@ struct is_invocable_r_impl : std::false_type {};
 
 template <class R, class F, class... Args>
 struct is_invocable_r_impl<
-    typename std::is_same<invoke_result_t<F, Args...>, R>::type, R, F, Args...>
+    typename std::is_convertible<invoke_result_t<F, Args...>, R>::type, R, F, Args...>
     : std::true_type {};
 
 template <class R, class F, class... Args>
@@ -153,7 +153,7 @@ public:
                 detail::is_invocable_r<R, F &&, Args...>::value> * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref(F &&f) noexcept
       : obj_(const_cast<void*>(reinterpret_cast<const void *>(std::addressof(f)))) {
-    callback_ = [](void *obj, Args... args) {
+    callback_ = [](void *obj, Args... args) -> R {
       return detail::invoke(
           *reinterpret_cast<typename std::add_pointer<F>::type>(obj),
           std::forward<Args>(args)...);
