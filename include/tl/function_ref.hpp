@@ -161,11 +161,7 @@ public:
 
   /// Makes `*this` refer to the same callable as `rhs`.
   TL_FUNCTION_REF_11_CONSTEXPR function_ref<R(Args...)> &
-  operator=(const function_ref<R(Args...)> &rhs) noexcept {
-    obj_ = rhs.obj_;
-    callback_ = rhs.callback_;
-    return *this;
-  }
+  operator=(const function_ref<R(Args...)> &rhs) noexcept = default;
 
   /// Makes `*this` refer to `f`.
   ///

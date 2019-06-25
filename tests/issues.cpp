@@ -18,7 +18,7 @@ tl::function_ref<Fruit* ()> bar()
 }
 
 TEST_CASE("Issue #9") {
-  bar()();
+  bar();
 }
 
 void foo(const tl::function_ref<int(const std::vector<int>)>& func) {
