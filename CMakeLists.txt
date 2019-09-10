@@ -1,40 +1,40 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.11)
 
-# Determine if we are building as part of a parent project.
-get_directory_property(is_subproject PARENT_DIRECTORY)
+project(tl-function_ref VERSION 1.0.0 LANGUAGES CXX)
 
-project(function_ref)
+option(FUNCTION_REF_ENABLE_TESTS "Enable tests." ON)
 
-add_library(function_ref INTERFACE)
-target_sources(function_ref INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/function_ref.hpp)
-target_include_directories(function_ref INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+include(FetchContent)
+FetchContent_Declare(
+  tl_cmake
+  GIT_REPOSITORY https://github.com/TartanLlama/tl-cmake.git
+)
+FetchContent_GetProperties(tl_cmake)
+if(NOT tl_cmake_POPULATED)
+  FetchContent_Populate(tl_cmake)
+  set(CMAKE_MODULE_PATH ${tl_cmake_SOURCE_DIR} ${CMAKE_MODULE_PATH})
+endif()
+include(add-tl)
 
-if(NOT is_subproject)
+tl_add_library(function-ref SOURCES 
+               include/tl/function_ref.hpp)
+
 # Prepare "Catch" library for other executables
-set(CATCH_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/test)
+set(CATCH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 add_library(Catch INTERFACE)
 target_include_directories(Catch INTERFACE ${CATCH_INCLUDE_DIR})
 
-# Make test executable
-set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/constructors.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/call.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/issues.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/assignment.cpp)
+if(FUNCTION_REF_ENABLE_TESTS)
+  # Make test executable
+  set(TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/constructors.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/call.cpp  
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/issues.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/assignment.cpp)
+  
+  add_executable(tests ${TEST_SOURCES})
+  
+  target_link_libraries(tests Catch function-ref)
 
-add_executable(tests ${TEST_SOURCES})
-
-target_link_libraries(tests Catch function_ref)
-set_property(TARGET tests PROPERTY CXX_STANDARD 14)
-
-
-find_package(standardese) # find standardese after installation
-
-# generates a custom target that will run standardese to generate the documentation
-if (standardese_FOUND)
-standardese_generate(function_ref
-                     INCLUDE_DIRECTORY .
-                     CONFIG ${CMAKE_SOURCE_DIR}/standardese.config
-                     INPUT function_ref.hpp)
-endif ()
-endif ()
+  set_property(TARGET tests PROPERTY CXX_STANDARD 14)
+endif()
