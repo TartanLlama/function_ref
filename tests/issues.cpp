@@ -1,4 +1,4 @@
-#include "catch.hpp"
+#include <catch2/catch.hpp>
 #include <tl/function_ref.hpp>
 
 TEST_CASE("Issue #2") {
