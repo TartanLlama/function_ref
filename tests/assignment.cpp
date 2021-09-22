@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include <tl/function_ref.hpp>
+#include <type_traits>
 
 void f(){}
 struct b {
@@ -18,3 +19,8 @@ TEST_CASE("Assignment", "[assignment]") {
         fr = &b::qux;
     }
 }
+
+using FR = tl::function_ref<void(void)>;
+static_assert(std::is_trivially_assignable<FR, FR&>::value, "");
+static_assert(std::is_trivially_assignable<FR, const FR&>::value, "");
+static_assert(std::is_trivially_assignable<FR, FR&&>::value, "");
