@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.11)
 
 project(tl-function_ref VERSION 1.0.0 LANGUAGES CXX)
 
-option(FUNCTION_REF_ENABLE_TESTS "Enable tests." ON)
+get_directory_property(is_subproject PARENT_DIRECTORY)
+if(NOT is_subproject)
+  set(is_mainproject YES)
+endif()
+
+option(FUNCTION_REF_ENABLE_TESTS "Enable tests." ${is_mainproject})
 
 include(FetchContent)
 FetchContent_Declare(
