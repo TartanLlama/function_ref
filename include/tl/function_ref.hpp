@@ -167,8 +167,9 @@ public:
   ///
   /// \synopsis template <typename F> constexpr function_ref &operator=(F &&f) noexcept;
   template <typename F,
-            detail::fnref::enable_if_t<detail::fnref::is_invocable_r<R, F &&, Args...>::value>
-                * = nullptr>
+            detail::fnref::enable_if_t<
+                !std::is_same<detail::fnref::decay_t<F>, function_ref>::value &&
+                detail::fnref::is_invocable_r<R, F &&, Args...>::value> * = nullptr>
   TL_FUNCTION_REF_11_CONSTEXPR function_ref<R(Args...)> &operator=(F &&f) noexcept {
     obj_ = reinterpret_cast<void *>(std::addressof(f));
     callback_ = [](void *obj, Args... args) {
