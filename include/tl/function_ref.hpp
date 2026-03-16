@@ -109,12 +109,20 @@ using invoke_result = invoke_result_impl<F, void, Us...>;
 template <class F, class... Us>
 using invoke_result_t = typename invoke_result<F, Us...>::type;
 
+#if __cplusplus >= 201703
+template <typename From, typename To>
+using is_prvalue_convertible = std::bool_constant<std::is_same_v<From,To> || std::is_convertible_v<From,To>>;
+#else
+template <typename From, typename To>
+using is_prvalue_convertible = std::is_convertible<From,To>;
+#endif
+
 template <class, class R, class F, class... Args>
 struct is_invocable_r_impl : std::false_type {};
 
 template <class R, class F, class... Args>
 struct is_invocable_r_impl<
-    typename std::is_convertible<invoke_result_t<F, Args...>, R>::type, R, F, Args...>
+    typename is_prvalue_convertible<invoke_result_t<F, Args...>, R>::type, R, F, Args...>
     : std::true_type {};
 
 template <class R, class F, class... Args>

@@ -1,11 +1,21 @@
 os:
-- Visual Studio 2015
-- Visual Studio 2017
+  - Visual Studio 2017
+  - Visual Studio 2015
+
+environment:
+  matrix:
+    - STD: 17
+    - STD: 14
 
 build_script:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DCMAKE_CXX_STANDARD=%STD% -DCMAKE_CXX_STANDARD_REQUIRED=True ..
   - cmake --build .
   - C:\projects\function-ref\build\Debug\tests.exe
+
+matrix:
+  exclude:
+    - os: Visual Studio 2015
+      STD: 17

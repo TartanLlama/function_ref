@@ -9,6 +9,14 @@ matrix:
       addons:
         apt:
           sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env: COMPILER=g++-7 CXX_STANDARD=17
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
              - ubuntu-toolchain-r-test
           packages:
              - g++-5

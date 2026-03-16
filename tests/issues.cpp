@@ -30,3 +30,19 @@ TEST_CASE("Issue #10") {
   auto f = [&](const std::vector<int> i) { return i[0] * z; };
   foo(f);
 }
+
+#if __cplusplus >= 201703
+struct NonCopyNonMove {
+  NonCopyNonMove() = default;
+  NonCopyNonMove(const NonCopyNonMove &) = delete;
+  NonCopyNonMove(NonCopyNonMove &&) = delete;
+};
+
+TEST_CASE("Issue #20") {
+  auto f = []() { return NonCopyNonMove(); };
+  auto fr = tl::function_ref<NonCopyNonMove()>(f);
+
+  // silence warnings
+  (void)fr;
+}
+#endif
